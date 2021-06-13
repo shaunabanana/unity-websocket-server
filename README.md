@@ -7,8 +7,8 @@ A simple, zero-dependency WebSocket server for Unity.
 * Add callbacks to the `onMessage` UnityEvent.
 
 ## Tested on
-> If you find this script works/doesn't work for you, please let me know by creating an [issue](https://github.com/shaunabanana/unity-websocket-server/issues) or emailing me at shengchenzhang1207@gmail.com
-> Also, if there's a feature you wanted added, there's a template for that as well in the issues.
+> If you find this script works/doesn't work for you, please let me know by creating an [issue](https://github.com/shaunabanana/unity-websocket-server/issues) or emailing me at shengchenzhang1207@gmail.com.
+> Also, if there's a feature you want added, there's a template for that as well in the issues.
 
 **Unity versions**
 * 2020.3
