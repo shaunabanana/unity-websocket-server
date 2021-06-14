@@ -63,6 +63,7 @@ namespace WebSocketServer {
                 connectionHandler.Start();
 
                 // Call the server callback.
+                server.onOpen.Invoke(this);
                 server.OnOpen(this);
                 return true;
             } else {
@@ -81,11 +82,15 @@ namespace WebSocketServer {
                         WebSocketMessage message = new WebSocketMessage(this, data);
                         server.messages.Enqueue(message);
                     } else if ((WebSocketOpCode)dataframe.opcode == WebSocketOpCode.Close) {
-                        // Handle closing the connection
+                        // Handle closing the connection.
                         Debug.Log("Client closed the connection.");
+                        // Close the connection.
                         stream.Close();
                         client.Close();
+                        // Call server callback.
+                        server.onClose.Invoke(this);
                         server.OnClose(this);
+                        // Jump out of the loop.
                         break;
                     }
                 } else {

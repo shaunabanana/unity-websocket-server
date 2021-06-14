@@ -13,7 +13,13 @@ using UnityEngine.Events;
 
 namespace WebSocketServer {
     [System.Serializable]
+    public class WebSocketOpenEvent : UnityEvent<WebSocketConnection> {}
+
+    [System.Serializable]
     public class WebSocketMessageEvent : UnityEvent<WebSocketMessage> {}
+
+    [System.Serializable]
+    public class WebSocketCloseEvent : UnityEvent<WebSocketConnection> {}
 
     public class WebSocketServer : MonoBehaviour
     {
@@ -27,7 +33,9 @@ namespace WebSocketServer {
 
         public string address;
         public int port;
+        public WebSocketOpenEvent onOpen;
         public WebSocketMessageEvent onMessage;
+        public WebSocketCloseEvent onClose;
 
         void Awake() {
             if (onMessage == null) onMessage = new WebSocketMessageEvent();
