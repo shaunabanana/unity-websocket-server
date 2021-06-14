@@ -11,26 +11,9 @@ using System.Collections.Concurrent;
 using UnityEngine;
 using UnityEngine.Events;
 
-// For parsing the client websocket requests
-using System.Text; 
-using System.Text.RegularExpressions;
-
 namespace WebSocketServer {
     [System.Serializable]
-    public class StringEvent : UnityEvent<string> {}
-
-    public struct WebSocketConnection {
-        public WebSocketConnection(TcpClient client, NetworkStream stream, ConcurrentQueue<string> queue)
-        {
-            this.client = client;
-            this.stream = stream;
-            this.queue = queue;
-        }
-
-        public TcpClient client { get; }
-        public NetworkStream stream { get; }
-        public ConcurrentQueue<string> queue { get; }
-    }
+    public class WebSocketMessageEvent : UnityEvent<WebSocketMessage> {}
 
     public class WebSocketServer : MonoBehaviour
     {
@@ -40,19 +23,18 @@ namespace WebSocketServer {
         private List<Thread> workerThreads;
         private TcpClient connectedTcpClient;
 
-        private ConcurrentQueue<string> messages;
+        public ConcurrentQueue<WebSocketMessage> messages;
 
         public string address;
         public int port;
-        public StringEvent onMessage;
+        public WebSocketMessageEvent onMessage;
 
         void Awake() {
-            if (onMessage == null) onMessage = new StringEvent();
+            if (onMessage == null) onMessage = new WebSocketMessageEvent();
         }
 
-        void Start()
-        {
-            messages = new ConcurrentQueue<string>();
+        void Start() {
+            messages = new ConcurrentQueue<WebSocketMessage>();
             workerThreads = new List<Thread>();
 
             tcpListenerThread = new Thread (new ThreadStart(ListenForTcpConnection));
@@ -60,11 +42,11 @@ namespace WebSocketServer {
             tcpListenerThread.Start();
         }
 
-        void Update()
-        {
-            string message;
+        void Update() {
+            WebSocketMessage message;
             while (messages.TryDequeue(out message)) {
                 onMessage.Invoke(message);
+                this.OnMessage(message);
             }
         }
 
@@ -75,14 +57,18 @@ namespace WebSocketServer {
                 tcpListener.Start();
                 Debug.Log("WebSocket server is listening for incoming connections.");
                 while (true) {
+                    // Accept a new client, then open a stream for reading and writing.
                     connectedTcpClient = tcpListener.AcceptTcpClient();
-                    NetworkStream stream = connectedTcpClient.GetStream();
-                    WebSocketConnection connection = new WebSocketConnection(connectedTcpClient, stream, messages);
-                    EstablishConnection(connection);
-                    Thread worker = new Thread (new ParameterizedThreadStart(HandleConnection));
-                    worker.IsBackground = true;
-                    worker.Start(connection);
-                    workerThreads.Add(worker);
+                    // Create a new connection
+                    WebSocketConnection connection = new WebSocketConnection(connectedTcpClient, this);
+                    // Establish connection
+                    connection.Establish();
+                    // // Start a new thread to handle the connection.
+                    // Thread worker = new Thread (new ParameterizedThreadStart(HandleConnection));
+                    // worker.IsBackground = true;
+                    // worker.Start(connection);
+                    // // Add it to the thread list. TODO: delete thread when disconnecting.
+                    // workerThreads.Add(worker);
                 }
             }
             catch (SocketException socketException) {
@@ -90,40 +76,31 @@ namespace WebSocketServer {
             }
         }
 
-        private void EstablishConnection (WebSocketConnection connection) {
-            // Wait for enough bytes to be available
-            while (!connection.stream.DataAvailable);
-            while(connection.client.Available < 3);
-            // Translate bytes of request to a RequestHeader object
-            Byte[] bytes = new Byte[connection.client.Available];
-            connection.stream.Read(bytes, 0, bytes.Length);
-            RequestHeader request = new RequestHeader(Encoding.UTF8.GetString(bytes));
+        // private void HandleConnection (object parameter) {
+        //     WebSocketConnection connection = (WebSocketConnection)parameter;
+        //     while (true) {
+        //         string message = ReceiveMessage(connection.client, connection.stream);
+        //         connection.queue.Enqueue(message);
+        //     }
+        // }
 
-            // Check if the request complies with WebSocket protocol.
-            if (WebSocketProtocol.CheckConnectionHandshake(request)) {
-                // If so, initiate the connection by sending a reply according to protocol.
-                Byte[] response = WebSocketProtocol.CreateHandshakeReply(request);
-                connection.stream.Write(response, 0, response.Length);
-                Debug.Log("WebSocket client connected.");
-            }
-        }
+        // private string ReceiveMessage(TcpClient client, NetworkStream stream) {
+        //     // Wait for data to be available, then read the data.
+        //     while (!stream.DataAvailable);
+        //     Byte[] bytes = new Byte[client.Available];
+        //     stream.Read(bytes, 0, bytes.Length);
 
-        private void HandleConnection (object parameter) {
-            WebSocketConnection connection = (WebSocketConnection)parameter;
-            while (true) {
-                string message = ReceiveMessage(connection.client, connection.stream);
-                connection.queue.Enqueue(message);
-            }
-        }
+        //     return WebSocketProtocol.DecodeMessage(bytes);
+        // }
 
-        private string ReceiveMessage(TcpClient client, NetworkStream stream) {
-            // Wait for data to be available, then read the data.
-            while (!stream.DataAvailable);
-            Byte[] bytes = new Byte[client.Available];
-            stream.Read(bytes, 0, bytes.Length);
+        public void OnOpen(WebSocketConnection connection) {}
 
-            return WebSocketProtocol.DecodeMessage(bytes);
-        }
+        public void OnMessage(WebSocketMessage message) {}
+
+        public void OnClose(WebSocketConnection connection) {}
+
+        public void OnError(WebSocketConnection connection) {}
+
 
         // private void SendMessage() {
         //     if (connectedTcpClient == null) {

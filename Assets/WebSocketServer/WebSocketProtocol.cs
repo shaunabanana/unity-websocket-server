@@ -9,6 +9,24 @@ using System.Text.RegularExpressions;
 
 namespace WebSocketServer {
 
+    struct WebSocketDataFrame {
+        public WebSocketDataFrame(bool fin, bool mask, int opcode, int length, int offset, Byte[] data) {
+            this.fin = fin;
+            this.mask = mask;
+            this.opcode = opcode;
+            this.length = length;
+            this.offset = offset;
+            this.data = data;
+        }
+
+        public bool fin { get; set; }
+        public bool mask { get; set; }
+        public int opcode { get; set; }
+        public int length { get; set; }
+        public int offset { get; set; }
+        public byte[] data { get; set; }
+    }
+
     class RequestHeader {
 
         static Regex head = new Regex("^(GET|POST|PUT|DELETE|OPTIONS) (.+) HTTP/([0-9.]+)", RegexOptions.Compiled);
@@ -101,43 +119,70 @@ namespace WebSocketServer {
             return response;
         }
 
-        public static string DecodeMessage(byte[] bytes) {
+        public static WebSocketDataFrame CreateDataFrame() {
+            return new WebSocketDataFrame(false, false, 0, 0, 0, null);
+        }
+
+        public static void ParseDataFrameHead(byte[] bytes, ref WebSocketDataFrame dataframe) {
             bool fin = (bytes[0] & 0b10000000) != 0,
                 mask = (bytes[1] & 0b10000000) != 0; // must be true, "All messages from the client to the server have this bit set"
 
-            int opcode = bytes[0] & 0b00001111, // expecting 1 - text message
-                msglen = bytes[1] - 128, // & 0111 1111
+            int opcode = bytes[0] & 0b00001111;
+            int msglen = bytes[1] & 0b01111111,
                 offset = 2;
+            
+            dataframe.fin = fin;
+            dataframe.mask = mask;
+            dataframe.opcode = opcode;
+            dataframe.length = msglen;
+            dataframe.offset = offset;
+            dataframe.data = bytes;
+        }
 
-            if (msglen == 126) {
+        public static void ParseDataFrameLength(byte[] bytes, ref WebSocketDataFrame dataframe) {
+            if (dataframe.length == 126) {
                 // was ToUInt16(bytes, offset) but the result is incorrect
-                msglen = BitConverter.ToUInt16(new byte[] { bytes[3], bytes[2] }, 0);
-                offset = 4;
-            } else if (msglen == 127) {
-                Debug.Log("TODO: msglen == 127, needs qword to store msglen");
-                // i don't really know the byte order, please edit this
-                // msglen = BitConverter.ToUInt64(new byte[] { bytes[5], bytes[4], bytes[3], bytes[2], bytes[9], bytes[8], bytes[7], bytes[6] }, 0);
-                // offset = 10;
+                dataframe.length = BitConverter.ToUInt16(new byte[] { bytes[3], bytes[2] }, 0);
+                dataframe.offset = 4;
+            } else if (dataframe.length == 127) {
+                dataframe.length = (int) BitConverter.ToUInt64(new byte[] { 
+                    bytes[9], bytes[8], bytes[7], bytes[6], 
+                    bytes[5], bytes[4], bytes[3], bytes[2] 
+                }, 0);
+                dataframe.offset = 10;
             }
+        }
 
-            if (msglen == 0)
-                Debug.Log("msglen == 0");
-            else if (mask) {
-                byte[] decoded = new byte[msglen];
-                byte[] masks = new byte[4] { bytes[offset], bytes[offset + 1], bytes[offset + 2], bytes[offset + 3] };
-                offset += 4;
+        public static string DecodeText(WebSocketDataFrame dataframe) {
+            if (dataframe.length > 0 && dataframe.mask) {
+                byte[] decoded = new byte[dataframe.length];
+                byte[] masks = new byte[4] { 
+                    dataframe.data[dataframe.offset], 
+                    dataframe.data[dataframe.offset + 1], 
+                    dataframe.data[dataframe.offset + 2], 
+                    dataframe.data[dataframe.offset + 3] 
+                };
+                int payloadOffset = dataframe.offset + 4;
 
-                for (int i = 0; i < msglen; ++i)
-                    decoded[i] = (byte)(bytes[offset + i] ^ masks[i % 4]);
+                for (int i = 0; i < dataframe.length; ++i) {
+                    decoded[i] = (byte)(dataframe.data[payloadOffset + i] ^ masks[i % 4]);
+                }
 
                 string text = Encoding.UTF8.GetString(decoded);
                 return text;
-            } else {
-                Debug.Log("mask bit not set");
             }
             return "";
         }
 
+    }
+
+    enum WebSocketOpCode {
+        Continuation = 0x0,
+        Text = 0x1,
+        Binary = 0x2,
+        Close = 0x8,
+        Ping = 0x9,
+        Pong = 0xA
     }
 
 }
