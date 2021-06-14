@@ -23,8 +23,11 @@ public class MyWebSocketServer: WebSocketServer {
   }
   
   public void OnMessage(WebSocketMessage message) {
-    // Here, message.connection gives you the connection that send the message.
+    // (WebSocketConnection)message.connection gives you the connection that send the message.
+    // (string)message.id gives you a unique ID for the message.
     // (string)message.data gives you the message content.
+    Debug.Log(message.connection.id);
+    Debug.Log(message.id);
     Debug.Log(message.data);
   }
   
