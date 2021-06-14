@@ -17,12 +17,12 @@ using WebSocketServer;
 
 public class MyWebSocketServer: WebSocketServer {
 
-  public void OnOpen(WebSocketConnection connection) {
+  override public void OnOpen(WebSocketConnection connection) {
     // Here, (string)connection.id gives you a unique ID to identify the client.
     Debug.Log(connection.id);
   }
   
-  public void OnMessage(WebSocketMessage message) {
+  override public void OnMessage(WebSocketMessage message) {
     // (WebSocketConnection)message.connection gives you the connection that send the message.
     // (string)message.id gives you a unique ID for the message.
     // (string)message.data gives you the message content.
@@ -31,7 +31,7 @@ public class MyWebSocketServer: WebSocketServer {
     Debug.Log(message.data);
   }
   
-  public void OnOpen(WebSocketConnection connection) {
+  override public void OnClose(WebSocketConnection connection) {
     // Here is the same as OnOpen
     Debug.Log(connection.id);
   }
