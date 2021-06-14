@@ -27,7 +27,7 @@ namespace WebSocketServer {
 
     public class WebSocketConnection {
 
-        private string id;
+        public string id;
         private TcpClient client;
         private NetworkStream stream;
         private WebSocketServer server;
