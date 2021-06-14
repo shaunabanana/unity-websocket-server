@@ -101,13 +101,13 @@ namespace WebSocketServer {
         //     return WebSocketProtocol.DecodeMessage(bytes);
         // }
 
-        public void OnOpen(WebSocketConnection connection) {}
+        public virtual void OnOpen(WebSocketConnection connection) {}
 
-        public void OnMessage(WebSocketMessage message) {}
+        public virtual void OnMessage(WebSocketMessage message) {}
 
-        public void OnClose(WebSocketConnection connection) {}
+        public virtual void OnClose(WebSocketConnection connection) {}
 
-        public void OnError(WebSocketConnection connection) {}
+        public virtual void OnError(WebSocketConnection connection) {}
 
 
         // private void SendMessage() {

@@ -2072,3 +2072,155 @@ System memory in use after: 168.1 MB.
 Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2646.
 Total: 3.040585 ms (FindLiveObjects: 0.363364 ms CreateObjectMapping: 0.067130 ms MarkObjects: 2.459490 ms  DeleteObjects: 0.149128 ms)
 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000789 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.53 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.062 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.36 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.3 MB.
+System memory in use after: 168.3 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2650.
+Total: 2.968602 ms (FindLiveObjects: 0.387611 ms CreateObjectMapping: 0.084138 ms MarkObjects: 2.366874 ms  DeleteObjects: 0.128467 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 9715.452427 seconds.
+  path: Assets/SomeDemoScript.cs
+  artifactKey: Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SomeDemoScript.cs using Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '08ef17481a6c464d7cb9eda9f1298668') in 0.013014 seconds
+  Import took 0.017623 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001007 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.37 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.105 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.35 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.5 MB.
+System memory in use after: 168.5 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2654.
+Total: 2.613195 ms (FindLiveObjects: 0.348336 ms CreateObjectMapping: 0.065173 ms MarkObjects: 2.075172 ms  DeleteObjects: 0.123462 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 10.735902 seconds.
+  path: Assets/MyWebSocketServer.cs
+  artifactKey: Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/MyWebSocketServer.cs using Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '01de21e644be05b7c5228c8563e8af1c') in 0.004918 seconds
+  Import took 0.008345 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000454 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.47 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.164 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.36 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.7 MB.
+System memory in use after: 168.7 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2658.
+Total: 3.096174 ms (FindLiveObjects: 0.367049 ms CreateObjectMapping: 0.116191 ms MarkObjects: 2.463152 ms  DeleteObjects: 0.146323 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000668 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.39 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.044 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.37 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 168.9 MB.
+System memory in use after: 168.9 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2662.
+Total: 2.453224 ms (FindLiveObjects: 0.258689 ms CreateObjectMapping: 0.068659 ms MarkObjects: 2.005193 ms  DeleteObjects: 0.118142 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 28.467701 seconds.
+  path: Assets/MyWebSocketServer.cs
+  artifactKey: Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/MyWebSocketServer.cs using Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5dc23b7bda2f559c184f6c557216688b') in 0.005424 seconds
+  Import took 0.009599 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000776 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.42 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.046 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.36 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 169.2 MB.
+System memory in use after: 169.2 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2666.
+Total: 2.833412 ms (FindLiveObjects: 0.362339 ms CreateObjectMapping: 0.077103 ms MarkObjects: 2.253779 ms  DeleteObjects: 0.138391 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 11.544332 seconds.
+  path: Assets/MyWebSocketServer.cs
+  artifactKey: Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/MyWebSocketServer.cs using Guid(5cae6cd5a80444e79b49b1b23e819bb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f087be4315f257bc6c813ea2db02d357') in 0.004746 seconds
+  Import took 0.008162 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000971 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for OSXStandalone target not found
+Refreshing native plugins compatible for Editor in 0.39 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.277 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.48 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1807 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 169.3 MB.
+System memory in use after: 169.3 MB.
+
+Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2670.
+Total: 2.702876 ms (FindLiveObjects: 0.293419 ms CreateObjectMapping: 0.073950 ms MarkObjects: 2.210569 ms  DeleteObjects: 0.123410 ms)
+
