@@ -5,6 +5,7 @@ A simple, zero-dependency WebSocket server for Unity.
 First import the package and set up the scene:
 * Download the UnityPackage from the [Releases page](https://github.com/shaunabanana/unity-websocket-server/releases). Import.
 * Create an empty GameObject, assign the script `WebSocketServer.cs`.
+  * Alternatively, if you're using inheritance, assign your own script.
 * Input the IP and port of the server.
 
 ### In Inspector GUI
