@@ -7,6 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 // For creating a thread
 using System.Threading;
+// For List & ConcurrentQueue
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 // Unity & Unity events
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,14 +18,28 @@ namespace WebSocketServer {
     [System.Serializable]
     public class StringEvent : UnityEvent<string> {}
 
+    public struct WebSocketConnection {
+        public WebSocketConnection(TcpClient client, NetworkStream stream, ConcurrentQueue<string> queue)
+        {
+            this.client = client;
+            this.stream = stream;
+            this.queue = queue;
+        }
+
+        public TcpClient client { get; }
+        public NetworkStream stream { get; }
+        public ConcurrentQueue<string> queue { get; }
+    }
+
     public class WebSocketServer : MonoBehaviour
     {
+        // The tcpListenerThread listens for incoming WebSocket connections, then assigns the client to handler threads;
         private TcpListener tcpListener;
         private Thread tcpListenerThread;
+        private List<Thread> workerThreads;
         private TcpClient connectedTcpClient;
 
-        private bool hasNewMessage = false;
-        private string message = "";
+        private ConcurrentQueue<string> messages;
 
         public string address;
         public int port;
@@ -34,36 +51,37 @@ namespace WebSocketServer {
 
         void Start()
         {
-            tcpListenerThread = new Thread (new ThreadStart(WebSocketServerThread));
+            messages = new ConcurrentQueue<string>();
+            workerThreads = new List<Thread>();
+
+            tcpListenerThread = new Thread (new ThreadStart(ListenForTcpConnection));
             tcpListenerThread.IsBackground = true;
             tcpListenerThread.Start();
         }
 
         void Update()
         {
-            if (hasNewMessage) {
+            string message;
+            while (messages.TryDequeue(out message)) {
                 onMessage.Invoke(message);
-                hasNewMessage = false;
             }
         }
 
-        private void WebSocketServerThread () { 		
+        private void ListenForTcpConnection () { 		
             try {
                 // Create listener on <address>:<port>.
                 tcpListener = new TcpListener(IPAddress.Parse(address), port);
                 tcpListener.Start();
                 Debug.Log("WebSocket server is listening for incoming connections.");
                 while (true) {
-                    using (connectedTcpClient = tcpListener.AcceptTcpClient()) {
-                        // Get a stream object for reading
-                        using (NetworkStream stream = connectedTcpClient.GetStream()) {
-                            EstablishConnection(connectedTcpClient, stream);
-                            while (true) {
-                                message = ReceiveMessage(connectedTcpClient, stream);
-                                hasNewMessage = true;
-                            }
-                        }
-                    }
+                    connectedTcpClient = tcpListener.AcceptTcpClient();
+                    NetworkStream stream = connectedTcpClient.GetStream();
+                    WebSocketConnection connection = new WebSocketConnection(connectedTcpClient, stream, messages);
+                    EstablishConnection(connection);
+                    Thread worker = new Thread (new ParameterizedThreadStart(HandleConnection));
+                    worker.IsBackground = true;
+                    worker.Start(connection);
+                    workerThreads.Add(worker);
                 }
             }
             catch (SocketException socketException) {
@@ -71,13 +89,13 @@ namespace WebSocketServer {
             }
         }
 
-        private void EstablishConnection (TcpClient client, NetworkStream stream) {
+        private void EstablishConnection (WebSocketConnection connection) {
             // Wait for enough bytes to be available
-            while (!stream.DataAvailable);
-            while(client.Available < 3);
+            while (!connection.stream.DataAvailable);
+            while(connection.client.Available < 3);
             // Translate bytes of request to string
-            Byte[] bytes = new Byte[client.Available];
-            stream.Read(bytes, 0, bytes.Length);
+            Byte[] bytes = new Byte[connection.client.Available];
+            connection.stream.Read(bytes, 0, bytes.Length);
             String data = Encoding.UTF8.GetString(bytes);
 
             // Check if the input has a "GET" header. If so, initiate the connection.
@@ -96,8 +114,16 @@ namespace WebSocketServer {
                     ) + eol
                     + eol);
 
-                stream.Write(response, 0, response.Length);
+                connection.stream.Write(response, 0, response.Length);
                 Debug.Log("WebSocket client connected.");
+            }
+        }
+
+        private void HandleConnection (object parameter) {
+            WebSocketConnection connection = (WebSocketConnection)parameter;
+            while (true) {
+                string message = ReceiveMessage(connection.client, connection.stream);
+                connection.queue.Enqueue(message);
             }
         }
 

@@ -740,3 +740,19 @@ System memory in use after: 154.7 MB.
 Unloading 12 unused Assets to reduce memory usage. Loaded Objects now: 2384.
 Total: 2.573800 ms (FindLiveObjects: 0.244247 ms CreateObjectMapping: 0.064546 ms MarkObjects: 2.104607 ms  DeleteObjects: 0.158731 ms)
 
+========================================================================
+Received Import Request.
+  Time since last request: 4669.823015 seconds.
+  path: Assets/WebSocketServer.cs
+  artifactKey: Guid(4ac217db4dad5436d9927ea08182cd9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/WebSocketServer.cs using Guid(4ac217db4dad5436d9927ea08182cd9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f6c82d612f9f55c45f81556965d9af53') in 0.012955 seconds
+  Import took 0.017233 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.028106 seconds.
+  path: Assets/WebSocketServer.cs
+  artifactKey: Guid(4ac217db4dad5436d9927ea08182cd9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/WebSocketServer.cs using Guid(4ac217db4dad5436d9927ea08182cd9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f6c82d612f9f55c45f81556965d9af53') in 0.001711 seconds
+  Import took 0.005219 seconds .
+
