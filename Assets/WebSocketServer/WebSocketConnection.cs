@@ -13,6 +13,12 @@ using System.Threading;
 
 namespace WebSocketServer {
 
+    public enum WebSocketEventType {
+        Open,
+        Close,
+        Message
+    }
+
     public struct WebSocketMessage {
         public WebSocketMessage(WebSocketConnection connection, string data) {
             this.id = Guid.NewGuid().ToString();
@@ -21,6 +27,20 @@ namespace WebSocketServer {
         }
 
         public string id { get; }
+        public WebSocketConnection connection { get; }
+        public string data { get; }
+    }
+
+    public struct WebSocketEvent {
+        public WebSocketEvent(WebSocketConnection connection, WebSocketEventType type, string data) {
+            this.id = Guid.NewGuid().ToString();
+            this.connection = connection;
+            this.type = type;
+            this.data = data;
+        }
+
+        public string id { get; }
+        public WebSocketEventType type { get; }
         public WebSocketConnection connection { get; }
         public string data { get; }
     }
@@ -63,8 +83,8 @@ namespace WebSocketServer {
                 connectionHandler.Start();
 
                 // Call the server callback.
-                server.onOpen.Invoke(this);
-                server.OnOpen(this);
+                WebSocketEvent wsEvent = new WebSocketEvent(this, WebSocketEventType.Open, null);
+                server.events.Enqueue(wsEvent);
                 return true;
             } else {
                 return false;
@@ -79,8 +99,8 @@ namespace WebSocketServer {
                     if ((WebSocketOpCode)dataframe.opcode == WebSocketOpCode.Text) {
                         // Let the server know of the message.
                         string data = WebSocketProtocol.DecodeText(dataframe);
-                        WebSocketMessage message = new WebSocketMessage(this, data);
-                        server.messages.Enqueue(message);
+                        WebSocketEvent wsEvent = new WebSocketEvent(this, WebSocketEventType.Message, data);
+                        server.events.Enqueue(wsEvent);
                     } else if ((WebSocketOpCode)dataframe.opcode == WebSocketOpCode.Close) {
                         // Handle closing the connection.
                         Debug.Log("Client closed the connection.");
@@ -88,8 +108,8 @@ namespace WebSocketServer {
                         stream.Close();
                         client.Close();
                         // Call server callback.
-                        server.onClose.Invoke(this);
-                        server.OnClose(this);
+                        WebSocketEvent wsEvent = new WebSocketEvent(this, WebSocketEventType.Close, null);
+                        server.events.Enqueue(wsEvent);
                         // Jump out of the loop.
                         break;
                     }

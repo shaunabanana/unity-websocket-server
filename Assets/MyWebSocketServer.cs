@@ -24,8 +24,16 @@ public class MyWebSocketServer : WebSocketServer.WebSocketServer
         // Here is the same as OnOpen
         Debug.Log(connection.id);
     }
+    
+    public void onConnectionOpened (WebSocketConnection connection) {
+        Debug.Log("Connection opened: " + connection.id);
+    }
 
     public void onMessageReceived (WebSocketMessage message) {
         Debug.Log("Received new message: " + message.data);
+    }
+
+    public void onConnectionClosed (WebSocketConnection connection) {
+        Debug.Log("Connection closed: " + connection.id);
     }
 }

@@ -29,7 +29,7 @@ namespace WebSocketServer {
         private List<Thread> workerThreads;
         private TcpClient connectedTcpClient;
 
-        public ConcurrentQueue<WebSocketMessage> messages;
+        public ConcurrentQueue<WebSocketEvent> events;
 
         public string address;
         public int port;
@@ -42,7 +42,7 @@ namespace WebSocketServer {
         }
 
         void Start() {
-            messages = new ConcurrentQueue<WebSocketMessage>();
+            events = new ConcurrentQueue<WebSocketEvent>();
             workerThreads = new List<Thread>();
 
             tcpListenerThread = new Thread (new ThreadStart(ListenForTcpConnection));
@@ -51,10 +51,19 @@ namespace WebSocketServer {
         }
 
         void Update() {
-            WebSocketMessage message;
-            while (messages.TryDequeue(out message)) {
-                onMessage.Invoke(message);
-                this.OnMessage(message);
+            WebSocketEvent wsEvent;
+            while (events.TryDequeue(out wsEvent)) {
+                if (wsEvent.type == WebSocketEventType.Open) {
+                    onOpen.Invoke(wsEvent.connection);
+                    this.OnOpen(wsEvent.connection);
+                } else if (wsEvent.type == WebSocketEventType.Close) {
+                    onClose.Invoke(wsEvent.connection);
+                    this.OnClose(wsEvent.connection);
+                } else if (wsEvent.type == WebSocketEventType.Message) {
+                    WebSocketMessage message = new WebSocketMessage(wsEvent.connection, wsEvent.data);
+                    onMessage.Invoke(message);
+                    this.OnMessage(message);
+                }
             }
         }
 
