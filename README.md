@@ -9,7 +9,7 @@ First import the package and set up the scene:
 * Input the IP and port of the server.
 
 ### In Inspector GUI
-The easiest way is to use the inspector. Add callbacks to the `onMessage`, `onMessage`, or `onClose` UnityEvent.
+The easiest way is to use the inspector. Add callbacks to the `onOpen`, `onMessage`, or `onClose` UnityEvent.
 
 ### Using class inheritance
 Alternatively, you can inherit from `WebSocketServer`. The following code shows you how:
