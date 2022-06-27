@@ -75,7 +75,7 @@ namespace WebSocketServer {
             }
 
             // Must have a Connection: Upgrade
-            if (!request.headers.ContainsKey("Connection") || !String.Equals(request.headers["Connection"], "Upgrade")) {
+            if (!request.headers.ContainsKey("Connection") || request.headers["Connection"].IndexOf("Upgrade") == -1) {
                 Debug.Log("Request does not have Connection: Upgrade.");
                 return false;
             }
